@@ -54,7 +54,6 @@ export default class jobList extends React.Component {
           self.setState({
             jobs: response.job,
           });
-          // self.initializeDatatable()
         })
         .bind(this);
     }
@@ -100,8 +99,8 @@ export default class jobList extends React.Component {
     }
 
     deletePassId = (id)=>{
-        $("#deleteConfirmModal").modal('show');
         this.setState({delete_id : id})
+        $("#deleteConfirmModal").modal('show');
         console.log(this.state.delete_id)
     };      
         viewPassId = (id) => {
@@ -217,7 +216,6 @@ export default class jobList extends React.Component {
             .doc(this.state.delete_id)
             .delete();
             console.log("Delete successful");
-            this.decreaseJobCount(this.state.company)
             this.refreshTable();
         }catch(error){
             console.log(error)
@@ -326,6 +324,13 @@ export default class jobList extends React.Component {
         $("#J_JpLevel option:first").attr("disabled","disabled"); 
         $("#city option:first").attr("disabled","disabled");
         $("#area option:first").attr("disabled","disabled"); 
+    }
+    getDateString = (obj) => {
+        console.log(obj)
+        var t = new Date(1970, 0, 1);
+        t.setSeconds(obj.seconds);
+        console.log(`date string is ${t}`)
+        return t.getDate()+'/'+(t.getMonth()+1)+'/'+t.getFullYear()
     }
 
   render() {
@@ -439,7 +444,7 @@ export default class jobList extends React.Component {
                             <td>{this.getcity(Job.J_city)}</td>
                             <td>{this.getAreaOfJob(Job.J_area)}</td>
                             <td>{Job.J_min_salary}~{Job.J_max_salary}</td>
-                            <td>{Job.PostedDate}</td>
+                            <td>{this.getDateString(Job.PostedDate)}</td>
                             <td>
                                 <a><i onClick={()=>this.viewPassId(Job.id)} className="view material-icons icon-padding" title="View" style={{color: "rgb(0, 110, 255)", cursor:"pointer"}} data-dismiss="modal" data-toggle="tooltip">&#xE417;</i></a> &nbsp;
                                 <a><i onClick={()=>this.editPassId(Job.id)} className="edit material-icons icon-padding" title="Edit" style={{color: "yellow", cursor:"pointer"}} data-dismiss="modal" data-toggle="tooltip">&#xE254;</i></a> &nbsp;
@@ -464,7 +469,7 @@ export default class jobList extends React.Component {
                     <table className="table table-bordered">
                          <tr> <td>Job Name:</td><td>{this.state.Jname}</td></tr>
                          <tr><td> Employer Name:</td><td> {this.getEmployer(this.state.EMPLOYERID)}</td></tr>
-                         <tr><td>Posted_Date: </td><td>{this.state.PostedDate}</td></tr>
+                       
                          <tr> <td>Phone Number:</td><td> {this.state.J_tel}</td></tr>
                          <tr> <td>Email:</td><td> {this.state.J_email}</td></tr>
                          <tr> <td>Address:</td> <td> {this.state.J_Address}, {this.getLocation(this.state.J_city,this.state.J_area)} </td></tr>
@@ -557,10 +562,7 @@ export default class jobList extends React.Component {
                                             </div>
                                     <div class="col-xl-6 col-md-8 border">
                                             <div class="panel-body">
-                                            <div class="form-group">
-                                                                    <label>Posted Date</label>
-                                                                    <input type="date" class="form-control" value="datetime" name="PostedDate" onChange={this.handleChange} value={this.state.PostedDate} required/>
-                                                        </div>
+                                           
                                                 <div class="form-group">
                                                             <label for="J_email">Email Address</label>
                                                             <input type="text" id="J_email" class="form-control" name="J_email" placeholder="abc@gmail.com" onChange={this.handleChange} value={this.state.J_email} required/>
